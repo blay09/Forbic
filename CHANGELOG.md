@@ -1,1 +1,2 @@
+- Fixed crash on dedicated servers
 - Added support for NeoForge's config screen

@@ -14,6 +14,7 @@ import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.config.IConfigSpec;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.config.ModConfigEvent;
+import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
@@ -251,7 +252,9 @@ public class NeoForgeBalmConfig extends AbstractBalmConfig {
         IConfigSpec configSpec = createConfigSpec(clazz);
         final var modContainer = ModLoadingContext.get().getActiveContainer();
         modContainer.registerConfig(ModConfig.Type.COMMON, configSpec);
-        modContainer.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
+        if (FMLEnvironment.dist.isClient()) {
+            modContainer.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
+        }
 
         modContainer.getEventBus().addListener((ModConfigEvent.Loading event) -> {
             configs.put(clazz, event.getConfig());
