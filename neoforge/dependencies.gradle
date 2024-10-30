@@ -1,5 +1,10 @@
 dependencies {
-    jarJar(group: "net.blay09.mods", name: "kuma-api-neoforge", version: "$kuma_version")
+    jarJar(group: "net.blay09.mods", name: "kuma-api-neoforge", version: "$kuma_version_range") {
+        version {
+            strictly kuma_version_range
+            prefer kuma_version
+        }
+    }
     compileOnly "mezz.jei:jei-$jei_minecraft_version-common-api:$jei_version"
     if (jei_minecraft_version == minecraft_version) {
         runtimeOnly "mezz.jei:jei-$jei_minecraft_version-forge:$jei_version"

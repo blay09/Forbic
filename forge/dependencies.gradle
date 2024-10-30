@@ -1,5 +1,6 @@
 dependencies {
-    jarJar(group: "net.blay09.mods", name: "kuma-api-forge", version: "$kuma_version") {
+    jarJar(group: "net.blay09.mods", name: "kuma-api-forge", version: "$kuma_version_range") {
+        jarJar.pin(it, kuma_version)
         transitive = false
     }
     compileOnly("mezz.jei:jei-$jei_minecraft_version-common-api:$jei_version")
