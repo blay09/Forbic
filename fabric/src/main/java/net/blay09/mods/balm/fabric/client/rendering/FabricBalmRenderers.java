@@ -6,7 +6,6 @@ import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.color.block.BlockColor;
-import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.renderer.RenderType;
@@ -52,11 +51,6 @@ public class FabricBalmRenderers implements BalmRenderers {
     @Override
     public void registerBlockColorHandler(BlockColor color, Supplier<Block[]> blocks) {
         ColorProviderRegistry.BLOCK.register(color, blocks.get());
-    }
-
-    @Override
-    public void registerItemColorHandler(ItemColor color, Supplier<ItemLike[]> items) {
-        ColorProviderRegistry.ITEM.register(color, items.get());
     }
 
     @Override

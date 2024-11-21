@@ -96,10 +96,8 @@ public class NeoForgeBalmModels implements BalmModels {
     }
 
     private final Map<String, Registrations> registrations = new ConcurrentHashMap<>();
-    private ModelBakery modelBakery;
 
     public void onBakeModels(ModelBakery modelBakery, ModelBakery.TextureGetter textureGetter) {
-        this.modelBakery = modelBakery;
         registrations.values().forEach(it -> it.setTextureGetter(textureGetter));
 
         synchronized (modelsToBake) {
@@ -121,79 +119,6 @@ public class NeoForgeBalmModels implements BalmModels {
         return deferredModel;
     }
 
-    @Override
-    public DeferredObject<BakedModel> bakeModel(ModelResourceLocation identifier, UnbakedModel model) {
-        DeferredModel deferredModel = new DeferredModel(identifier) {
-            @Override
-            public BakedModel resolve(ModelBakery bakery, Map<ModelResourceLocation, BakedModel> modelRegistry, ModelBakery.TextureGetter textureGetter) {
-                ModelBaker baker = createBaker(identifier, textureGetter);
-                return model.bake(baker, baker.getModelTextureGetter(), getModelState(Transformation.identity()));
-            }
-        };
-        modelsToBake.add(deferredModel);
-        return deferredModel;
-    }
-
-    @Override
-    public DeferredObject<BakedModel> retexture(ModelResourceLocation identifier, Map<String, String> textureMap) {
-        DeferredModel deferredModel = new DeferredModel(identifier) {
-            @Override
-            public BakedModel resolve(ModelBakery bakery, Map<ModelResourceLocation, BakedModel> modelRegistry, ModelBakery.TextureGetter textureGetter) {
-                UnbakedModel model = retexture(bakery, identifier, textureMap);
-                ModelBaker baker = createBaker(identifier, textureGetter);
-                return model.bake(baker, baker.getModelTextureGetter(), getModelState(Transformation.identity()));
-            }
-        };
-        modelsToBake.add(deferredModel);
-        return deferredModel;
-    }
-
-    @Override
-    public DeferredObject<BakedModel> loadDynamicModel(ModelResourceLocation identifier, Set<ModelResourceLocation> models, @Nullable Function<BlockState, ModelResourceLocation> modelFunction, @Nullable Function<BlockState, Map<String, String>> textureMapFunction, @Nullable BiConsumer<BlockState, Matrix4f> transformFunction, List<RenderType> renderTypes) {
-        Function<BlockState, ModelResourceLocation> effectiveModelFunction = modelFunction != null ? modelFunction : (it -> identifier);
-
-        DeferredModel deferredModel = new DeferredModel(identifier) {
-            @Override
-            public BakedModel resolve(ModelBakery bakery, Map<ModelResourceLocation, BakedModel> modelRegistry, ModelBakery.TextureGetter textureGetter) {
-                final var unbakedModels = new HashMap<ModelResourceLocation, UnbakedModel>();
-                for (final var modelId : models) {
-                    unbakedModels.put(modelId, getUnbakedModelOrMissing(modelId.id()));
-                }
-                return new NeoForgeCachedDynamicModel(bakery,
-                        unbakedModels,
-                        effectiveModelFunction,
-                        null,
-                        textureMapFunction,
-                        transformFunction,
-                        renderTypes,
-                        identifier,
-                        textureGetter);
-            }
-        };
-        modelsToBake.add(deferredModel);
-        return deferredModel;
-    }
-
-    @Override
-    public void overrideModel(Supplier<Block> block, Supplier<BakedModel> model) {
-        getActiveRegistrations().overrides.add(Pair.of(block, model));
-    }
-
-    @Override
-    public ModelState getModelState(Transformation transformation) {
-        return new SimpleModelState(transformation);
-    }
-
-    @Override
-    public UnbakedModel getUnbakedModelOrMissing(ResourceLocation location) {
-        return ((ModelBakeryAccessor) modelBakery).getUnbakedModels().getOrDefault(location, ((ModelBakeryAccessor) modelBakery).getMissingModel());
-    }
-
-    @Override
-    public UnbakedModel getUnbakedMissingModel() {
-        return ((ModelBakeryAccessor) modelBakery).getMissingModel();
-    }
-
     public void register(String modId, IEventBus eventBus) {
         eventBus.register(getRegistrations(modId));
     }
@@ -206,15 +131,4 @@ public class NeoForgeBalmModels implements BalmModels {
         return registrations.computeIfAbsent(modId, it -> new Registrations());
     }
 
-    @Override
-    public ModelBaker createBaker(ModelResourceLocation location, ModelBakery.TextureGetter textureGetter) {
-        try {
-            Class<?> clazz = Class.forName("net.minecraft.client.resources.model.ModelBakery$ModelBakerImpl");
-            Constructor<?> constructor = clazz.getDeclaredConstructor(ModelBakery.class, ModelBakery.TextureGetter.class, ModelResourceLocation.class);
-            constructor.setAccessible(true);
-            return (ModelBaker) constructor.newInstance(modelBakery, textureGetter, location);
-        } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            throw new RuntimeException("Balm failed to create model baker", e);
-        }
-    }
 }

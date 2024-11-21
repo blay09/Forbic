@@ -121,11 +121,6 @@ public class NeoForgeBalmRenderers implements BalmRenderers {
     }
 
     @Override
-    public void registerItemColorHandler(ItemColor color, Supplier<ItemLike[]> items) {
-        getActiveRegistrations().itemColors.add(new ColorRegistration<>(color, items));
-    }
-
-    @Override
     public void setBlockRenderType(Supplier<Block> block, RenderType renderType) {
         // Do nothing in Forge. Forge unfortunately changes the Vanilla model format,
         // so we have to have both this call (for Fabric) and change the JSON (for Forge).

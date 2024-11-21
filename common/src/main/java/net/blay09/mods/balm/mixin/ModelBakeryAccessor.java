@@ -14,6 +14,5 @@ public interface ModelBakeryAccessor {
     UnbakedModel getMissingModel();
 
     @Accessor
-    Map<ResourceLocation, UnbakedModel> getUnbakedModels();
-
+    Map<ResourceLocation, UnbakedModel> getUnbakedPlainModels();
 }
