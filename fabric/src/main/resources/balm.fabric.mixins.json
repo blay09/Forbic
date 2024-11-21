@@ -30,7 +30,7 @@
     "ChatComponentMixin",
     "CheckboxAccessor",
     "EntityModelSetAccessor",
-    "EntityModelSetMixin",
+    "LayerDefinitionsMixin",
     "GuiMixin",
     "ImageButtonAccessor",
     "ItemInHandRendererMixin",
