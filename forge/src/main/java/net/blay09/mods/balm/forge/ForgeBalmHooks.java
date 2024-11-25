@@ -100,7 +100,7 @@ public class ForgeBalmHooks implements BalmHooks {
 
     @Override
     public ItemStack getCraftingRemainingItem(ItemStack itemStack) {
-        return itemStack.getCraftingRemainingItem();
+        return itemStack.getCraftingRemainder();
     }
 
     @Override
@@ -114,8 +114,8 @@ public class ForgeBalmHooks implements BalmHooks {
     }
 
     @Override
-    public int getBurnTime(ItemStack itemStack) {
-        return ForgeHooks.getBurnTime(itemStack, RecipeType.SMELTING);
+    public int getBurnTime(Level level, ItemStack itemStack) {
+        return level.fuelValues().burnDuration(itemStack);
     }
 
     @Override

@@ -13,6 +13,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 import java.util.Arrays;
+import java.util.Set;
 import java.util.function.Supplier;
 
 public class ForgeBalmBlockEntities implements BalmBlockEntities {
@@ -21,7 +22,7 @@ public class ForgeBalmBlockEntities implements BalmBlockEntities {
         DeferredRegister<BlockEntityType<?>> register = DeferredRegisters.get(ForgeRegistries.BLOCK_ENTITY_TYPES, identifier.getNamespace());
         RegistryObject<BlockEntityType<T>> registryObject = register.register(identifier.getPath(), () -> {
             Block[] resolvedBlocks = blocks.get();
-            return BlockEntityType.Builder.of(factory::create, resolvedBlocks).build(null);
+            return new BlockEntityType<>(factory::create, Set.of(resolvedBlocks));
         });
         return new DeferredObject<>(identifier, registryObject, registryObject::isPresent);
     }
@@ -31,7 +32,7 @@ public class ForgeBalmBlockEntities implements BalmBlockEntities {
         DeferredRegister<BlockEntityType<?>> register = DeferredRegisters.get(ForgeRegistries.BLOCK_ENTITY_TYPES, identifier.getNamespace());
         RegistryObject<BlockEntityType<T>> registryObject = register.register(identifier.getPath(), () -> {
             Block[] resolvedBlocks = Arrays.stream(blocks).map(DeferredObject::get).toArray(Block[]::new);
-            return BlockEntityType.Builder.of(factory::create, resolvedBlocks).build(null);
+            return new BlockEntityType<>(factory::create, Set.of(resolvedBlocks));
         });
         return new DeferredObject<>(identifier, registryObject, registryObject::isPresent);
     }

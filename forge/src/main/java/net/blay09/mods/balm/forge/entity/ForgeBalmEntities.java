@@ -3,6 +3,8 @@ package net.blay09.mods.balm.forge.entity;
 import net.blay09.mods.balm.api.DeferredObject;
 import net.blay09.mods.balm.api.entity.BalmEntities;
 import net.blay09.mods.balm.forge.DeferredRegisters;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -40,7 +42,7 @@ public class ForgeBalmEntities implements BalmEntities {
     @Override
     public <T extends Entity> DeferredObject<EntityType<T>> registerEntity(ResourceLocation identifier, EntityType.Builder<T> typeBuilder) {
         DeferredRegister<EntityType<?>> register = DeferredRegisters.get(ForgeRegistries.ENTITY_TYPES, identifier.getNamespace());
-        RegistryObject<EntityType<T>> registryObject = register.register(identifier.getPath(), () -> typeBuilder.build(identifier.toString()));
+        RegistryObject<EntityType<T>> registryObject = register.register(identifier.getPath(), () -> typeBuilder.build(ResourceKey.create(Registries.ENTITY_TYPE, identifier)));
         return new DeferredObject<>(identifier, registryObject, registryObject::isPresent);
     }
 
@@ -49,7 +51,7 @@ public class ForgeBalmEntities implements BalmEntities {
         final DeferredRegister<EntityType<?>> register = DeferredRegisters.get(ForgeRegistries.ENTITY_TYPES, identifier.getNamespace());
         final Registrations registrations = getActiveRegistrations();
         final RegistryObject<EntityType<T>> registryObject = register.register(identifier.getPath(), () -> {
-            EntityType<T> entityType = typeBuilder.build(identifier.toString());
+            EntityType<T> entityType = typeBuilder.build(ResourceKey.create(Registries.ENTITY_TYPE, identifier));
             registrations.attributeSuppliers.put(entityType, attributeBuilder.get().build());
             return entityType;
         });

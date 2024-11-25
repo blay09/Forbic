@@ -3,7 +3,6 @@ package net.blay09.mods.balm.forge;
 import net.blay09.mods.balm.api.BalmHooks;
 import net.blay09.mods.balm.api.BalmRegistries;
 import net.blay09.mods.balm.api.BalmRuntime;
-import net.blay09.mods.balm.api.EmptyLoadContext;
 import net.blay09.mods.balm.api.block.BalmBlockEntities;
 import net.blay09.mods.balm.api.block.BalmBlocks;
 import net.blay09.mods.balm.api.command.BalmCommands;
@@ -39,22 +38,22 @@ import net.blay09.mods.balm.forge.recipe.ForgeBalmRecipes;
 import net.blay09.mods.balm.forge.sound.ForgeBalmSounds;
 import net.blay09.mods.balm.forge.stats.ForgeBalmStats;
 import net.blay09.mods.balm.forge.world.ForgeBalmWorldGen;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.*;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AddReloadListenerEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
-public class ForgeBalmRuntime implements BalmRuntime<EmptyLoadContext> {
+public class ForgeBalmRuntime implements BalmRuntime<ForgeLoadContext> {
     private final BalmWorldGen worldGen = new ForgeBalmWorldGen();
     private final BalmBlocks blocks = new ForgeBalmBlocks();
     private final BalmBlockEntities blockEntities = new ForgeBalmBlockEntities();
@@ -176,7 +175,7 @@ public class ForgeBalmRuntime implements BalmRuntime<EmptyLoadContext> {
     }
 
     @Override
-    public void initialize(String modId, EmptyLoadContext context, Runnable initializer) {
+    public void initialize(String modId, ForgeLoadContext context, Runnable initializer) {
         ((ForgeBalmItems) items).register();
         ((ForgeBalmEntities) entities).register();
         ((ForgeBalmWorldGen) worldGen).register();
@@ -184,9 +183,8 @@ public class ForgeBalmRuntime implements BalmRuntime<EmptyLoadContext> {
 
         initializer.run();
 
-        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        modEventBus.addListener((FMLLoadCompleteEvent event) -> initializeAddons());
-        DeferredRegisters.register(modId, modEventBus);
+        context.modBus().addListener((FMLLoadCompleteEvent event) -> initializeAddons());
+        DeferredRegisters.register(modId, context.modBus());
     }
 
     @Override
@@ -224,8 +222,8 @@ public class ForgeBalmRuntime implements BalmRuntime<EmptyLoadContext> {
     }
 
     @Override
-    public void addServerReloadListener(ResourceLocation identifier, PreparableReloadListener reloadListener) {
-        MinecraftForge.EVENT_BUS.addListener((AddReloadListenerEvent event) -> event.addListener(reloadListener));
+    public void addServerReloadListener(ResourceLocation identifier, Function<HolderLookup.Provider, PreparableReloadListener> reloadListener) {
+        MinecraftForge.EVENT_BUS.addListener((AddReloadListenerEvent event) -> event.addListener(reloadListener.apply(event.getRegistryAccess())));
     }
 
     @Override
