@@ -11,6 +11,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.ai.village.poi.PoiType;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.feature.Feature;
@@ -50,7 +51,6 @@ public class ForgeBalmWorldGen implements BalmWorldGen {
             });
         }
     }
-
     public static final Codec<BalmBiomeModifier> BALM_BIOME_MODIFIER_CODEC = Codec.unit(BalmBiomeModifier.INSTANCE);
     private final Map<String, Registrations> registrations = new ConcurrentHashMap<>();
 
@@ -74,6 +74,15 @@ public class ForgeBalmWorldGen implements BalmWorldGen {
         });
         getActiveRegistrations().placementModifiers.add(deferredObject);
         return deferredObject;
+    }
+
+    @Override
+    public <T extends PoiType> DeferredObject<T> registerPoiType(ResourceLocation identifier, Supplier<T> supplier) {
+        return new DeferredObject<>(identifier, () -> {
+            T poiType = supplier.get();
+            Registry.register(BuiltInRegistries.POINT_OF_INTEREST_TYPE, identifier, poiType);
+            return poiType;
+        }).resolveImmediately();
     }
 
     private static final List<BiomeModification> biomeModifications = new ArrayList<>();
