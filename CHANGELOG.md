@@ -1,2 +1,1 @@
-- Fixed crash on dedicated servers
-- Added support for NeoForge's config screen
+- Updated to Minecraft 1.21.4
