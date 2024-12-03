@@ -3,7 +3,6 @@ package net.blay09.mods.balm.neoforge.client.rendering;
 import com.mojang.datafixers.util.Pair;
 import net.blay09.mods.balm.api.client.rendering.BalmRenderers;
 import net.minecraft.client.color.block.BlockColor;
-import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.renderer.RenderType;
@@ -55,7 +54,6 @@ public class NeoForgeBalmRenderers implements BalmRenderers {
         public final List<Pair<Supplier<BlockEntityType<?>>, BlockEntityRendererProvider<BlockEntity>>> blockEntityRenderers = new ArrayList<>();
         public final List<Pair<Supplier<EntityType<?>>, EntityRendererProvider<Entity>>> entityRenderers = new ArrayList<>();
         public final List<ColorRegistration<BlockColor, Block>> blockColors = new ArrayList<>();
-        public final List<ColorRegistration<ItemColor, ItemLike>> itemColors = new ArrayList<>();
 
         @SubscribeEvent
         public void setupClient(FMLClientSetupEvent event) {
@@ -83,13 +81,6 @@ public class NeoForgeBalmRenderers implements BalmRenderers {
         public void initBlockColors(RegisterColorHandlersEvent.Block event) {
             for (ColorRegistration<BlockColor, Block> blockColor : blockColors) {
                 event.register(blockColor.getColor(), blockColor.getObjects().get());
-            }
-        }
-
-        @SubscribeEvent
-        public void initItemColors(RegisterColorHandlersEvent.Item event) {
-            for (ColorRegistration<ItemColor, ItemLike> itemColor : itemColors) {
-                event.register(itemColor.getColor(), itemColor.getObjects().get());
             }
         }
     }
