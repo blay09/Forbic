@@ -4,20 +4,14 @@ import net.blay09.mods.balm.api.DeferredObject;
 import net.blay09.mods.balm.api.world.BalmWorldGen;
 import net.blay09.mods.balm.api.world.BiomePredicate;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
-import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.worldgen.features.FeatureUtils;
-import net.minecraft.data.worldgen.placement.PlacementUtils;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.ai.village.poi.PoiType;
 import net.minecraft.world.level.levelgen.GenerationStep;
-import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
-import net.minecraft.world.level.levelgen.placement.PlacedFeature;
-import net.minecraft.world.level.levelgen.placement.PlacementModifier;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 
 import java.util.function.Supplier;
@@ -38,6 +32,15 @@ public class FabricBalmWorldGen implements BalmWorldGen {
             T placementModifierType = supplier.get();
             Registry.register(BuiltInRegistries.PLACEMENT_MODIFIER_TYPE, identifier, placementModifierType);
             return placementModifierType;
+        }).resolveImmediately();
+    }
+
+    @Override
+    public <T extends PoiType> DeferredObject<T> registerPoiType(ResourceLocation identifier, Supplier<T> supplier) {
+        return new DeferredObject<>(identifier, () -> {
+            T poiType = supplier.get();
+            Registry.register(BuiltInRegistries.POINT_OF_INTEREST_TYPE, identifier, poiType);
+            return poiType;
         }).resolveImmediately();
     }
 
