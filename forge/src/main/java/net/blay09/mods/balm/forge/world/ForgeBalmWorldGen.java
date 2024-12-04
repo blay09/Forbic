@@ -78,11 +78,9 @@ public class ForgeBalmWorldGen implements BalmWorldGen {
 
     @Override
     public <T extends PoiType> DeferredObject<T> registerPoiType(ResourceLocation identifier, Supplier<T> supplier) {
-        return new DeferredObject<>(identifier, () -> {
-            T poiType = supplier.get();
-            Registry.register(BuiltInRegistries.POINT_OF_INTEREST_TYPE, identifier, poiType);
-            return poiType;
-        }).resolveImmediately();
+        DeferredRegister<PoiType> register = DeferredRegisters.get(ForgeRegistries.POI_TYPES, identifier.getNamespace());
+        RegistryObject<T> registryObject = register.register(identifier.getPath(), supplier);
+        return new DeferredObject<>(identifier,registryObject, registryObject::isPresent);
     }
 
     private static final List<BiomeModification> biomeModifications = new ArrayList<>();
