@@ -2,7 +2,6 @@ package net.blay09.mods.balm.neoforge.client.rendering;
 
 import net.blay09.mods.balm.api.DeferredObject;
 import net.blay09.mods.balm.api.client.rendering.BalmModels;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.model.*;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
@@ -17,10 +16,16 @@ public class NeoForgeBalmModels implements BalmModels {
 
     private static class Registrations {
         public final List<ResourceLocation> additionalModels = new ArrayList<>();
+        public Map<ResourceLocation, BakedModel> bakedStandaloneModels = new HashMap<>();
 
         @SubscribeEvent
         public void onRegisterAdditionalModels(ModelEvent.RegisterAdditional event) {
             additionalModels.forEach(event::register);
+        }
+
+        @SubscribeEvent
+        public void onBakingCompleted(ModelEvent.BakingCompleted event) {
+            bakedStandaloneModels = event.getBakingResult().standaloneModels();
         }
     }
 
@@ -28,18 +33,15 @@ public class NeoForgeBalmModels implements BalmModels {
 
     @Override
     public DeferredObject<BakedModel> loadModel(ResourceLocation identifier) {
-        final var modelResourceLocation = new ModelResourceLocation(identifier, "standalone");
         final var deferredModel = new DeferredObject<BakedModel>(identifier) {
             @Override
             public BakedModel resolve() {
-                return Minecraft.getInstance().getModelManager().getModel(modelResourceLocation);
+                return getRegistrations(identifier.getNamespace()).bakedStandaloneModels.get(identifier);
             }
 
             @Override
             public boolean canResolve() {
-                final var modelManager = Minecraft.getInstance().getModelManager();
-                final var foundModel = modelManager.getModel(modelResourceLocation);
-                return foundModel != modelManager.getMissingModel();
+                return getRegistrations(identifier.getNamespace()).bakedStandaloneModels.containsKey(identifier);
             }
         };
         getActiveRegistrations().additionalModels.add(identifier);
