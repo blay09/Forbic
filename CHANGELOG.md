@@ -1,2 +1,1 @@
-- Fixed crash on dedicated servers
-- Fixed potential crash with other mods in regards to the dummy milk fluid
+- Fixed crash when using mods like Crafting Tweaks and Inventory Essentials together in a small pack
