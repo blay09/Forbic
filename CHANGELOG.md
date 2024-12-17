@@ -1,1 +1,1 @@
-- Updated to Minecraft 1.21.4
+- Fixed model load errors on NeoForge causing Cooking for Blockheads to crash
