@@ -1,6 +1,5 @@
 package net.blay09.mods.balm.forge.world;
 
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import net.blay09.mods.balm.api.DeferredObject;
 import net.blay09.mods.balm.api.world.BalmWorldGen;
@@ -12,6 +11,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.ai.village.poi.PoiType;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.feature.Feature;
@@ -20,6 +20,7 @@ import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.world.BiomeModifier;
 import net.minecraftforge.common.world.ModifiableBiomeInfo;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -77,6 +78,13 @@ public class ForgeBalmWorldGen implements BalmWorldGen {
         return deferredObject;
     }
 
+    @Override
+    public <T extends PoiType> DeferredObject<T> registerPoiType(ResourceLocation identifier, Supplier<T> supplier) {
+        final var register = DeferredRegisters.get(Registries.POINT_OF_INTEREST_TYPE, identifier.getNamespace());
+        final var registryObject = register.register(identifier.getPath(), supplier);
+        return new DeferredObject<>(identifier, registryObject, registryObject::isPresent);
+    }
+
     private static final List<BiomeModification> biomeModifications = new ArrayList<>();
 
     @Override
@@ -92,25 +100,29 @@ public class ForgeBalmWorldGen implements BalmWorldGen {
                 if (location != null && biomeModification.getBiomePredicate().test(location, biome)) {
                     Registry<PlacedFeature> placedFeatures = ServerLifecycleHooks.getCurrentServer()
                             .registryAccess()
-                            .registryOrThrow(Registries.PLACED_FEATURE);
-                    placedFeatures.getHolder(biomeModification.getConfiguredFeatureKey())
+                            .lookupOrThrow(Registries.PLACED_FEATURE);
+                    placedFeatures.get(biomeModification.getConfiguredFeatureKey())
                             .ifPresent(placedFeature -> builder.getGenerationSettings().addFeature(biomeModification.getStep(), placedFeature));
                 }
             }
         }
     }
 
-    public void register() {
-        FMLJavaModLoadingContext.get().getModEventBus().register(getActiveRegistrations());
+    public void register(String modId, IEventBus eventBus) {
+        eventBus.register(getRegistrations(modId));
     }
 
     private Registrations getActiveRegistrations() {
-        return registrations.computeIfAbsent(ModLoadingContext.get().getActiveNamespace(), it -> new Registrations());
+        return getRegistrations(ModLoadingContext.get().getActiveNamespace());
     }
 
-    public static void initializeBalmBiomeModifiers() {
+    private Registrations getRegistrations(String modId) {
+        return registrations.computeIfAbsent(modId, it -> new Registrations());
+    }
+
+    public static void initializeBalmBiomeModifiers(IEventBus modEventBus) {
         var registry = DeferredRegister.create(ForgeRegistries.Keys.BIOME_MODIFIER_SERIALIZERS, "balm");
         registry.register("balm", () -> BALM_BIOME_MODIFIER_CODEC);
-        registry.register(FMLJavaModLoadingContext.get().getModEventBus());
+        registry.register(modEventBus);
     }
 }

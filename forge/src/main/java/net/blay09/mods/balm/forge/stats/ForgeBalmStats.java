@@ -1,11 +1,14 @@
 package net.blay09.mods.balm.forge.stats;
 
 import net.blay09.mods.balm.api.stats.BalmStats;
+import net.blay09.mods.balm.forge.DeferredRegisters;
+import net.blay09.mods.balm.forge.item.ForgeBalmItems;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.stats.StatFormatter;
 import net.minecraft.stats.Stats;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -37,11 +40,15 @@ public class ForgeBalmStats implements BalmStats {
         getActiveRegistrations().customStats.add(identifier);
     }
 
-    public void register() {
-        FMLJavaModLoadingContext.get().getModEventBus().register(getActiveRegistrations());
+    public void register(String modId, IEventBus eventBus) {
+        eventBus.register(getRegistrations(modId));
     }
 
     private Registrations getActiveRegistrations() {
-        return registrations.computeIfAbsent(ModLoadingContext.get().getActiveNamespace(), it -> new Registrations());
+        return getRegistrations(ModLoadingContext.get().getActiveNamespace());
+    }
+
+    private Registrations getRegistrations(String modId) {
+        return registrations.computeIfAbsent(modId, it -> new Registrations());
     }
 }

@@ -3,22 +3,20 @@ package net.blay09.mods.balm.forge.client.rendering;
 import com.mojang.datafixers.util.Pair;
 import net.blay09.mods.balm.api.client.rendering.BalmRenderers;
 import net.minecraft.client.color.block.BlockColor;
-import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -56,7 +54,6 @@ public class ForgeBalmRenderers implements BalmRenderers {
         public final List<Pair<Supplier<BlockEntityType<?>>, BlockEntityRendererProvider<BlockEntity>>> blockEntityRenderers = new ArrayList<>();
         public final List<Pair<Supplier<EntityType<?>>, EntityRendererProvider<Entity>>> entityRenderers = new ArrayList<>();
         public final List<ColorRegistration<BlockColor, Block>> blockColors = new ArrayList<>();
-        public final List<ColorRegistration<ItemColor, ItemLike>> itemColors = new ArrayList<>();
 
         @SubscribeEvent
         public void setupClient(FMLClientSetupEvent event) {
@@ -84,13 +81,6 @@ public class ForgeBalmRenderers implements BalmRenderers {
         public void initBlockColors(RegisterColorHandlersEvent.Block event) {
             for (ColorRegistration<BlockColor, Block> blockColor : blockColors) {
                 event.register(blockColor.getColor(), blockColor.getObjects().get());
-            }
-        }
-
-        @SubscribeEvent
-        public void initItemColors(RegisterColorHandlersEvent.Item event) {
-            for (ColorRegistration<ItemColor, ItemLike> itemColor : itemColors) {
-                event.register(itemColor.getColor(), itemColor.getObjects().get());
             }
         }
     }
@@ -122,21 +112,20 @@ public class ForgeBalmRenderers implements BalmRenderers {
     }
 
     @Override
-    public void registerItemColorHandler(ItemColor color, Supplier<ItemLike[]> items) {
-        getActiveRegistrations().itemColors.add(new ColorRegistration<>(color, items));
-    }
-
-    @Override
     public void setBlockRenderType(Supplier<Block> block, RenderType renderType) {
         // Do nothing in Forge. Forge unfortunately changes the Vanilla model format,
         // so we have to have both this call (for Fabric) and change the JSON (for Forge).
     }
 
-    public void register() {
-        FMLJavaModLoadingContext.get().getModEventBus().register(getActiveRegistrations());
+    public void register(String modId, IEventBus eventBus) {
+        eventBus.register(getRegistrations(modId));
     }
 
     private Registrations getActiveRegistrations() {
-        return registrations.computeIfAbsent(ModLoadingContext.get().getActiveNamespace(), it -> new Registrations());
+        return getRegistrations(ModLoadingContext.get().getActiveNamespace());
+    }
+
+    private Registrations getRegistrations(String modId) {
+        return registrations.computeIfAbsent(modId, it -> new Registrations());
     }
 }

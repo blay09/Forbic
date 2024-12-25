@@ -273,14 +273,6 @@ public class ForgeBalmClientEvents {
             });
         });
 
-        events.registerEvent(RecipesUpdatedEvent.class, priority -> {
-            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (net.minecraftforge.client.event.RecipesUpdatedEvent orig) -> {
-                RegistryAccess registryAccess = Minecraft.getInstance().level.registryAccess(); // same way that Minecraft does it in the packet handler
-                final RecipesUpdatedEvent event = new RecipesUpdatedEvent(orig.getRecipeManager(), registryAccess);
-                events.fireEventHandlers(priority, event);
-            });
-        });
-
         events.registerEvent(ItemTooltipEvent.class, priority -> {
             MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (net.minecraftforge.event.entity.player.ItemTooltipEvent orig) -> {
                 final ItemTooltipEvent event = new ItemTooltipEvent(orig.getItemStack(), orig.getEntity(), orig.getToolTip(), orig.getFlags());

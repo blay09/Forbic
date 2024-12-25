@@ -1,13 +1,13 @@
 package net.blay09.mods.balm.forge.client;
 
 import net.blay09.mods.balm.api.Balm;
-import net.blay09.mods.balm.api.EmptyLoadContext;
 import net.blay09.mods.balm.api.client.BalmClientRuntime;
 import net.blay09.mods.balm.api.client.keymappings.BalmKeyMappings;
 import net.blay09.mods.balm.api.client.rendering.BalmModels;
 import net.blay09.mods.balm.api.client.rendering.BalmRenderers;
 import net.blay09.mods.balm.api.client.rendering.BalmTextures;
 import net.blay09.mods.balm.api.client.screen.BalmScreens;
+import net.blay09.mods.balm.forge.ForgeLoadContext;
 import net.blay09.mods.balm.forge.event.ForgeBalmEvents;
 import net.blay09.mods.balm.forge.client.keymappings.ForgeBalmKeyMappings;
 import net.blay09.mods.balm.forge.client.rendering.ForgeBalmModels;
@@ -16,7 +16,7 @@ import net.blay09.mods.balm.forge.client.rendering.ForgeBalmTextures;
 import net.blay09.mods.balm.forge.client.screen.ForgeBalmScreens;
 import net.blay09.mods.balm.forge.event.ForgeBalmClientEvents;
 
-public class ForgeBalmClientRuntime implements BalmClientRuntime<EmptyLoadContext> {
+public class ForgeBalmClientRuntime implements BalmClientRuntime<ForgeLoadContext> {
 
     private final BalmRenderers renderers = new ForgeBalmRenderers();
     private final BalmTextures textures = new ForgeBalmTextures();
@@ -54,11 +54,11 @@ public class ForgeBalmClientRuntime implements BalmClientRuntime<EmptyLoadContex
     }
 
     @Override
-    public void initialize(String modId, EmptyLoadContext context, Runnable initializer) {
-        ((ForgeBalmRenderers) renderers).register();
-        ((ForgeBalmScreens) screens).register();
-        ((ForgeBalmModels) models).register();
-        ((ForgeBalmKeyMappings) keyMappings).register();
+    public void initialize(String modId, ForgeLoadContext context, Runnable initializer) {
+        ((ForgeBalmRenderers) renderers).register(modId, context.modEventBus());
+        ((ForgeBalmScreens) screens).register(modId, context.modEventBus());
+        ((ForgeBalmModels) models).register(modId, context.modEventBus());
+        ((ForgeBalmKeyMappings) keyMappings).register(modId, context.modEventBus());
 
         initializer.run();
     }
