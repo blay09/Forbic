@@ -1,1 +1,1 @@
-- Added support for NeoForge's config screen
+- Fixed ClientStartedEvent firing twice, likely causing issues in Default Options
