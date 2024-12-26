@@ -1,1 +1,1 @@
-- Fixed model load errors on NeoForge causing Cooking for Blockheads to crash
+- Fixed ClientStartedEvent firing twice, likely causing issues in Default Options
