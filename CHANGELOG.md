@@ -1,1 +1,1 @@
-- Fixed ClientStartedEvent firing twice, likely causing issues in Default Options
+- Fixed crash on dedicated servers
