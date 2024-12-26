@@ -10,6 +10,8 @@ import net.blay09.mods.balm.api.config.ExpectedType;
 import net.blay09.mods.balm.api.event.ConfigReloadedEvent;
 import net.blay09.mods.balm.api.network.ConfigReflection;
 import net.minecraft.resources.ResourceLocation;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.config.IConfigSpec;
 import net.neoforged.fml.config.ModConfig;
@@ -252,8 +254,8 @@ public class NeoForgeBalmConfig extends AbstractBalmConfig {
         IConfigSpec configSpec = createConfigSpec(clazz);
         final var modContainer = ModLoadingContext.get().getActiveContainer();
         modContainer.registerConfig(ModConfig.Type.COMMON, configSpec);
-        if (FMLEnvironment.dist.isClient()) {
-            modContainer.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
+        if (FMLEnvironment.dist == Dist.CLIENT) {
+            initializeConfigurationScreen(modContainer);
         }
 
         modContainer.getEventBus().addListener((ModConfigEvent.Loading event) -> {
@@ -304,5 +306,9 @@ public class NeoForgeBalmConfig extends AbstractBalmConfig {
     @Override
     public File getConfigDir() {
         return FMLPaths.CONFIGDIR.get().toFile();
+    }
+
+    private static void initializeConfigurationScreen(ModContainer modContainer) {
+        modContainer.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
     }
 }
