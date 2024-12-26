@@ -20,7 +20,6 @@
     "KeyMappingMixin",
     "MouseHandlerAccessor",
     "ScreenAccessor",
-    "MinecraftMixin",
     "LootTableMixin"
   ],
   "injectors": {
