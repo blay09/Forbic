@@ -1,1 +1,1 @@
-- Fixed crash on dedicated servers
+- Fixed crash when mod returns null container on Fabric
