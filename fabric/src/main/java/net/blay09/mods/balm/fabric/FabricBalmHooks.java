@@ -59,10 +59,16 @@ public class FabricBalmHooks implements BalmHooks {
         if (balmData.isEmpty()) {
             // If we have no data, try to import from NeoForge in case the world was migrated
             balmData = ((BalmEntity) entity).getNeoForgeBalmData();
+            if (!balmData.isEmpty()) {
+                ((BalmEntity) entity).setFabricBalmData(balmData);
+            }
         }
         if (balmData.isEmpty()) {
             // If we still have no data, try to import from Forge in case the world was migrated
             balmData = ((BalmEntity) entity).getForgeBalmData();
+            if (!balmData.isEmpty()) {
+                ((BalmEntity) entity).setFabricBalmData(balmData);
+            }
         }
         return balmData;
     }
