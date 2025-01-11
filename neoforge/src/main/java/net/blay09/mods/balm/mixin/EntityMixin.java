@@ -7,24 +7,19 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Entity.class)
 public class EntityMixin implements BalmEntity {
 
     private CompoundTag fabricBalmData = new CompoundTag();
+    private CompoundTag forgeBalmData = new CompoundTag();
 
     @Inject(method = "load(Lnet/minecraft/nbt/CompoundTag;)V", at = @At("HEAD"))
     private void load(CompoundTag compound, CallbackInfo callbackInfo) {
         if (compound.contains("BalmData")) {
             fabricBalmData = compound.getCompound("BalmData");
-        }
-    }
-
-    @Inject(method = "saveWithoutId(Lnet/minecraft/nbt/CompoundTag;)Lnet/minecraft/nbt/CompoundTag;", at = @At("HEAD"))
-    private void saveWithoutId(CompoundTag compound, CallbackInfoReturnable<CompoundTag> callbackInfo) {
-        if (!fabricBalmData.isEmpty()) {
-            compound.put("BalmData", fabricBalmData);
+        } else if (compound.contains("ForgeData")) {
+            forgeBalmData = compound.getCompound("ForgeData").getCompound("PlayerPersisted").getCompound("BalmData");
         }
     }
 
@@ -36,5 +31,25 @@ public class EntityMixin implements BalmEntity {
     @Override
     public void setFabricBalmData(CompoundTag tag) {
         this.fabricBalmData = tag;
+    }
+
+    @Override
+    public CompoundTag getForgeBalmData() {
+        return forgeBalmData;
+    }
+
+    @Override
+    public void setForgeBalmData(CompoundTag tag) {
+        this.forgeBalmData = tag;
+    }
+
+    @Override
+    public CompoundTag getNeoForgeBalmData() {
+        throw new UnsupportedOperationException("This method should not have been called. Report this issue to Balm.");
+    }
+
+    @Override
+    public void setNeoForgeBalmData(CompoundTag tag) {
+        throw new UnsupportedOperationException("This method should not have been called. Report this issue to Balm.");
     }
 }

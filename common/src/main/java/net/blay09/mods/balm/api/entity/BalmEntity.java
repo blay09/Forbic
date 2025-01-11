@@ -8,4 +8,12 @@ public interface BalmEntity {
 
     void setFabricBalmData(CompoundTag tag);
 
+    CompoundTag getForgeBalmData();
+
+    void setForgeBalmData(CompoundTag tag);
+
+    CompoundTag getNeoForgeBalmData();
+
+    void setNeoForgeBalmData(CompoundTag tag);
+
 }
