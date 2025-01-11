@@ -1,1 +1,1 @@
-- Fixed crash when using mods like Crafting Tweaks and Inventory Essentials together in a small pack
+- Fixed crash when mod returns null container on Fabric
