@@ -24,7 +24,8 @@ import static net.blay09.mods.balm.api.Balm.sidedProxy;
 
 public class FabricBalm implements ModInitializer {
 
-    private static final SidedProxy<FabricBalmProxy> proxy = sidedProxy("net.blay09.mods.balm.fabric.FabricBalmProxy", "net.blay09.mods.balm.fabric.client.FabricBalmClientProxy");
+    private static final SidedProxy<FabricBalmProxy> proxy = sidedProxy("net.blay09.mods.balm.fabric.FabricBalmProxy",
+            "net.blay09.mods.balm.fabric.client.FabricBalmClientProxy");
 
     @Override
     public void onInitialize() {
@@ -44,7 +45,10 @@ public class FabricBalm implements ModInitializer {
 
         ItemStorage.SIDED.registerFallback((world, pos, state, blockEntity, direction) -> {
             if (blockEntity instanceof BalmContainerProvider containerProvider) {
-                return InventoryStorage.of(containerProvider.getContainer(direction), direction);
+                final var container = containerProvider.getContainer(direction);
+                if (container != null) {
+                    return InventoryStorage.of(container, direction);
+                }
             }
 
             return null;
