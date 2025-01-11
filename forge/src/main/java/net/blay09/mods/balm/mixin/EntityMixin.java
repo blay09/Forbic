@@ -19,14 +19,10 @@ public class EntityMixin implements BalmEntity {
     private void load(CompoundTag compound, CallbackInfo callbackInfo) {
         if (compound.contains("BalmData")) {
             fabricBalmData = compound.getCompound("BalmData");
-        } else if (compound.contains("NeoForgeData")) {
+        }
+        if (compound.contains("NeoForgeData")) {
             neoforgeBalmData = compound.getCompound("NeoForgeData").getCompound("PlayerPersisted").getCompound("BalmData");
         }
-    }
-
-    @Inject(method = "saveWithoutId(Lnet/minecraft/nbt/CompoundTag;)Lnet/minecraft/nbt/CompoundTag;", at = @At("HEAD"))
-    private void saveWithoutId(CompoundTag compound, CallbackInfoReturnable<CompoundTag> callbackInfo) {
-        compound.put("BalmData", fabricBalmData);
     }
 
     @Override

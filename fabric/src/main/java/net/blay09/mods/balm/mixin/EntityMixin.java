@@ -13,6 +13,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class EntityMixin implements BalmEntity {
 
     private CompoundTag balmData = new CompoundTag();
+    private CompoundTag forgeBalmData = new CompoundTag();
+    private CompoundTag neoforgeBalmData = new CompoundTag();
 
     @Inject(method = "load(Lnet/minecraft/nbt/CompoundTag;)V", at = @At("HEAD"))
     private void load(CompoundTag compound, CallbackInfo callbackInfo) {
@@ -23,6 +25,12 @@ public class EntityMixin implements BalmEntity {
                 CompoundTag playerPersisted = forgeData.getCompound("PlayerPersisted");
                 balmData = playerPersisted.getCompound("BalmData");
             }
+        }
+        if (compound.contains("ForgeData")) {
+            forgeBalmData = compound.getCompound("ForgeData").getCompound("PlayerPersisted").getCompound("BalmData");
+        }
+        if (compound.contains("NeoForgeData")) {
+            neoforgeBalmData = compound.getCompound("NeoForgeData").getCompound("PlayerPersisted").getCompound("BalmData");
         }
     }
 
@@ -41,5 +49,25 @@ public class EntityMixin implements BalmEntity {
     @Override
     public void setFabricBalmData(CompoundTag tag) {
         this.balmData = tag;
+    }
+
+    @Override
+    public CompoundTag getForgeBalmData() {
+        return forgeBalmData;
+    }
+
+    @Override
+    public void setForgeBalmData(CompoundTag tag) {
+        this.forgeBalmData = tag;
+    }
+
+    @Override
+    public CompoundTag getNeoForgeBalmData() {
+        return neoforgeBalmData;
+    }
+
+    @Override
+    public void setNeoForgeBalmData(CompoundTag tag) {
+        this.neoforgeBalmData = tag;
     }
 }

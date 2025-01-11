@@ -18,7 +18,8 @@ public class EntityMixin implements BalmEntity {
     private void load(CompoundTag compound, CallbackInfo callbackInfo) {
         if (compound.contains("BalmData")) {
             fabricBalmData = compound.getCompound("BalmData");
-        } else if (compound.contains("ForgeData")) {
+        }
+        if (compound.contains("ForgeData")) {
             forgeBalmData = compound.getCompound("ForgeData").getCompound("PlayerPersisted").getCompound("BalmData");
         }
     }
