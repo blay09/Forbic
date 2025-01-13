@@ -7,10 +7,8 @@ import net.blay09.mods.balm.api.config.Comment;
 import net.blay09.mods.balm.api.config.ExpectedType;
 import net.blay09.mods.balm.api.event.ConfigReloadedEvent;
 import net.blay09.mods.balm.api.network.ConfigReflection;
-import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.IConfigSpec;
 import net.minecraftforge.fml.config.ModConfig;
@@ -241,7 +239,7 @@ public class ForgeBalmConfig extends AbstractBalmConfig {
             // TODO would be good if this still applied non-synced properties
             boolean hasSyncMessage = getConfigSyncMessageFactory(clazz) != null;
             boolean isHostingServer = ServerLifecycleHooks.getCurrentServer() != null;
-            boolean isIngame = DistExecutor.runForDist(() -> () -> Minecraft.getInstance().gameMode != null, () -> () -> false);
+            boolean isIngame = Balm.getProxy().isIngame();
             if (!hasSyncMessage || isHostingServer || !isIngame) {
                 setActiveConfig(clazz, newConfigData);
             }
