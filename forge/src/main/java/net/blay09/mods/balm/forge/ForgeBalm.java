@@ -12,20 +12,21 @@ import net.blay09.mods.balm.forge.world.ForgeBalmWorldGen;
 import net.minecraft.world.Container;
 import net.minecraftforge.common.capabilities.CapabilityToken;
 import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.items.IItemHandler;
 
 @Mod("balm")
 public class ForgeBalm {
 
-    public ForgeBalm(IEventBus modEventBus) {
+    public ForgeBalm(FMLJavaModLoadingContext context) {
         ((AbstractBalmConfig) Balm.getConfig()).initialize();
         ExampleConfig.initialize();
         Balm.getCommands().register(BalmCommand::register);
 
+        final var modEventBus = context.getModEventBus();
         ForgeBalmWorldGen.initializeBalmBiomeModifiers(modEventBus);
         modEventBus.addListener(ForgeBalmClient::onInitializeClient);
 
