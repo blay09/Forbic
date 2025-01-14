@@ -7,7 +7,6 @@ import net.blay09.mods.balm.api.world.BiomePredicate;
 import net.blay09.mods.balm.forge.DeferredRegisters;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -21,10 +20,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.world.BiomeModifier;
 import net.minecraftforge.common.world.ModifiableBiomeInfo;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -32,29 +27,11 @@ import net.minecraftforge.server.ServerLifecycleHooks;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
 public class ForgeBalmWorldGen implements BalmWorldGen {
 
-    private static class Registrations {
-        public final List<DeferredObject<?>> configuredFeatures = new ArrayList<>();
-        public final List<DeferredObject<?>> placedFeatures = new ArrayList<>();
-        public final List<DeferredObject<?>> placementModifiers = new ArrayList<>();
-
-        @SubscribeEvent
-        public void commonSetup(FMLCommonSetupEvent event) {
-            event.enqueueWork(() -> {
-                placementModifiers.forEach(DeferredObject::resolve);
-                configuredFeatures.forEach(DeferredObject::resolve);
-                placedFeatures.forEach(DeferredObject::resolve);
-            });
-        }
-    }
-
     public static final MapCodec<BalmBiomeModifier> BALM_BIOME_MODIFIER_CODEC = MapCodec.unit(BalmBiomeModifier.INSTANCE);
-    private final Map<String, Registrations> registrations = new ConcurrentHashMap<>();
 
     public ForgeBalmWorldGen() {
         MinecraftForge.EVENT_BUS.register(this);
@@ -69,13 +46,9 @@ public class ForgeBalmWorldGen implements BalmWorldGen {
 
     @Override
     public <T extends PlacementModifierType<?>> DeferredObject<T> registerPlacementModifier(ResourceLocation identifier, Supplier<T> supplier) {
-        DeferredObject<T> deferredObject = new DeferredObject<>(identifier, () -> {
-            T placementModifierType = supplier.get();
-            Registry.register(BuiltInRegistries.PLACEMENT_MODIFIER_TYPE, identifier, placementModifierType);
-            return placementModifierType;
-        });
-        getActiveRegistrations().placementModifiers.add(deferredObject);
-        return deferredObject;
+        final var register = DeferredRegisters.get(Registries.PLACEMENT_MODIFIER_TYPE, identifier.getNamespace());
+        RegistryObject<T> registryObject = register.register(identifier.getPath(), supplier);
+        return new DeferredObject<>(identifier, registryObject, registryObject::isPresent);
     }
 
     @Override
@@ -106,18 +79,6 @@ public class ForgeBalmWorldGen implements BalmWorldGen {
                 }
             }
         }
-    }
-
-    public void register(String modId, IEventBus eventBus) {
-        eventBus.register(getRegistrations(modId));
-    }
-
-    private Registrations getActiveRegistrations() {
-        return getRegistrations(ModLoadingContext.get().getActiveNamespace());
-    }
-
-    private Registrations getRegistrations(String modId) {
-        return registrations.computeIfAbsent(modId, it -> new Registrations());
     }
 
     public static void initializeBalmBiomeModifiers(IEventBus modEventBus) {

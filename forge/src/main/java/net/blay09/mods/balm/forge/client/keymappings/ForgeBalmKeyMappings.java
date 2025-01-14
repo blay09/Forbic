@@ -5,14 +5,12 @@ import net.blay09.mods.balm.api.client.keymappings.KeyConflictContext;
 import net.blay09.mods.balm.api.client.keymappings.KeyModifier;
 import net.blay09.mods.balm.api.client.keymappings.KeyModifiers;
 import net.blay09.mods.balm.common.client.keymappings.CommonBalmKeyMappings;
-import net.blay09.mods.balm.forge.client.rendering.ForgeBalmModels;
 import net.minecraft.client.KeyMapping;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.client.settings.IKeyConflictContext;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;

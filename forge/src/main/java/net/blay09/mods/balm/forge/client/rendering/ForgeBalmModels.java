@@ -11,7 +11,6 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.ModLoadingContext;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -52,16 +51,12 @@ public class ForgeBalmModels implements BalmModels {
                 return getRegistrations(identifier.getNamespace()).bakedStandaloneModels.containsKey(identifier);
             }
         };
-        getActiveRegistrations().additionalModels.add(identifier);
+        getRegistrations(identifier.getNamespace()).additionalModels.add(identifier);
         return deferredModel;
     }
 
     public void register(String modId, IEventBus eventBus) {
         eventBus.register(getRegistrations(modId));
-    }
-
-    private Registrations getActiveRegistrations() {
-        return getRegistrations(ModLoadingContext.get().getActiveNamespace());
     }
 
     private Registrations getRegistrations(String modId) {

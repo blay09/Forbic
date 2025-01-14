@@ -178,7 +178,6 @@ public class ForgeBalmRuntime implements BalmRuntime<ForgeLoadContext> {
     public void initialize(String modId, ForgeLoadContext context, Runnable initializer) {
         ((ForgeBalmItems) items).register(modId, context.modEventBus());
         ((ForgeBalmEntities) entities).register(modId, context.modEventBus());
-        ((ForgeBalmWorldGen) worldGen).register(modId, context.modEventBus());
         ((ForgeBalmStats) stats).register(modId, context.modEventBus());
 
         initializer.run();

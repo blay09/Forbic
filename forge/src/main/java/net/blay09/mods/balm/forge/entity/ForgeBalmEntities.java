@@ -3,7 +3,6 @@ package net.blay09.mods.balm.forge.entity;
 import net.blay09.mods.balm.api.DeferredObject;
 import net.blay09.mods.balm.api.entity.BalmEntities;
 import net.blay09.mods.balm.forge.DeferredRegisters;
-import net.blay09.mods.balm.forge.world.ForgeBalmWorldGen;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -14,8 +13,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -48,7 +45,7 @@ public class ForgeBalmEntities implements BalmEntities {
     @Override
     public <T extends LivingEntity> DeferredObject<EntityType<T>> registerEntity(ResourceLocation identifier, EntityType.Builder<T> typeBuilder, Supplier<AttributeSupplier.Builder> attributeBuilder) {
         final var register = DeferredRegisters.get(Registries.ENTITY_TYPE, identifier.getNamespace());
-        final var registrations = getActiveRegistrations();
+        final var registrations = getRegistrations(identifier.getNamespace());
         final var registryObject = register.register(identifier.getPath(), () -> {
             EntityType<T> entityType = typeBuilder.build(ResourceKey.create(Registries.ENTITY_TYPE, identifier));
             registrations.attributeSuppliers.put(entityType, attributeBuilder.get().build());
@@ -59,10 +56,6 @@ public class ForgeBalmEntities implements BalmEntities {
 
     public void register(String modId, IEventBus eventBus) {
         eventBus.register(getRegistrations(modId));
-    }
-
-    private Registrations getActiveRegistrations() {
-        return getRegistrations(ModLoadingContext.get().getActiveNamespace());
     }
 
     private Registrations getRegistrations(String modId) {

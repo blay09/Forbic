@@ -37,15 +37,11 @@ public class ForgeBalmStats implements BalmStats {
 
     @Override
     public void registerCustomStat(ResourceLocation identifier) {
-        getActiveRegistrations().customStats.add(identifier);
+        getRegistrations(identifier.getNamespace()).customStats.add(identifier);
     }
 
     public void register(String modId, IEventBus eventBus) {
         eventBus.register(getRegistrations(modId));
-    }
-
-    private Registrations getActiveRegistrations() {
-        return getRegistrations(ModLoadingContext.get().getActiveNamespace());
     }
 
     private Registrations getRegistrations(String modId) {
