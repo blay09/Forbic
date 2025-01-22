@@ -11,6 +11,8 @@ import java.util.List;
 @Config("balm")
 public class ExampleConfigData implements BalmConfigData {
 
+    public static final String EXAMPLE_STATIC = "test";
+
     public enum ExampleEnum {
         Hello,
         World

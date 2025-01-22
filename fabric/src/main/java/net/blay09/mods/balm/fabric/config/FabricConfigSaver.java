@@ -5,6 +5,7 @@ import com.google.common.collect.Table;
 import com.mojang.logging.LogUtils;
 import net.blay09.mods.balm.api.config.BalmConfigData;
 import net.blay09.mods.balm.api.config.Comment;
+import net.blay09.mods.balm.api.network.ConfigReflection;
 import net.blay09.mods.balm.fabric.config.notoml.Notoml;
 import net.blay09.mods.balm.fabric.config.notoml.NotomlSerializer;
 import org.slf4j.Logger;
@@ -22,7 +23,7 @@ public class FabricConfigSaver {
     public static Notoml toNotoml(BalmConfigData configData) {
         Table<String, String, Object> properties = HashBasedTable.create();
         Table<String, String, String> comments = HashBasedTable.create();
-        for (Field rootField : configData.getClass().getFields()) {
+        for (Field rootField : ConfigReflection.getAllFields(configData.getClass())) {
             var isCategory = !isPropertyType(rootField.getType());
             var category = isCategory ? rootField.getName() : "";
             if (isCategory) {
@@ -32,7 +33,7 @@ public class FabricConfigSaver {
                 }
                 try {
                     var categoryInstance = rootField.get(configData);
-                    for (Field propertyField : categoryInstance.getClass().getFields()) {
+                    for (Field propertyField : ConfigReflection.getAllFields(categoryInstance.getClass())) {
                         var property = propertyField.getName();
                         var propertyComment = propertyField.getAnnotation(Comment.class);
                         if (propertyComment != null) {

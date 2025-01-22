@@ -12,7 +12,7 @@ import java.util.List;
 public class ConfigReflection {
 
     public static List<Field> getAllFields(Class<?> clazz) {
-        return Arrays.stream(clazz.getFields()).filter(it -> !Modifier.isFinal(it.getModifiers())).toList();
+        return Arrays.stream(clazz.getFields()).filter(it -> !Modifier.isFinal(it.getModifiers()) && !Modifier.isStatic(it.getModifiers())).toList();
     }
 
     public static List<Field> getSyncedFields(Class<?> clazz) {
