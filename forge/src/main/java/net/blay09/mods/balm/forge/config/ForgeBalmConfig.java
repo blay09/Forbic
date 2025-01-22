@@ -232,6 +232,11 @@ public class ForgeBalmConfig extends AbstractBalmConfig {
 
         FMLJavaModLoadingContext.get().getModEventBus().addListener((ModConfigEvent.Reloading event) -> {
             configs.put(clazz, event.getConfig());
+            if (event.getConfig().getConfigData() == null) {
+                logger.warn("Received a config reload event with a null config data. Ignoring.");
+                return;
+            }
+
             T newConfigData = readConfigValues(clazz, event.getConfig());
             configData.put(clazz, newConfigData);
 
