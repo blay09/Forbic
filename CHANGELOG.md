@@ -1,1 +1,3 @@
-- Fixed Forge crash when receiving a config reload event without config data
+- Fixed *-common.out.toml file unnecessarily being created on Fabric
+- Fixed static or final fields causing issues when used in config data class
+- Added `@IgnoreConfig` field annotation for use in config data classes
