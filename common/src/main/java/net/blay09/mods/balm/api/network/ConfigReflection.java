@@ -1,5 +1,6 @@
 package net.blay09.mods.balm.api.network;
 
+import net.blay09.mods.balm.api.config.IgnoreConfig;
 import net.blay09.mods.balm.api.config.Synced;
 import net.minecraft.resources.ResourceLocation;
 
@@ -9,15 +10,21 @@ import java.util.*;
 
 public class ConfigReflection {
 
+    public static boolean isConfigDataField(Field field) {
+        return !Modifier.isFinal(field.getModifiers())
+                && !Modifier.isStatic(field.getModifiers())
+                && field.getAnnotation(IgnoreConfig.class) == null;
+    }
+
     public static List<Field> getAllFields(Class<?> clazz) {
-        return Arrays.stream(clazz.getFields()).filter(it -> !Modifier.isFinal(it.getModifiers()) && !Modifier.isStatic(it.getModifiers())).toList();
+        return Arrays.stream(clazz.getFields()).filter(ConfigReflection::isConfigDataField).toList();
     }
 
     public static List<Field> getSyncedFields(Class<?> clazz) {
         List<Field> syncedFields = new ArrayList<>();
         Field[] fields = clazz.getFields();
         for (Field field : fields) {
-            if (isSyncedFieldOrObject(field)) {
+            if (isSyncedFieldOrObject(field) && isConfigDataField(field)) {
                 syncedFields.add(field);
             }
         }
@@ -33,7 +40,7 @@ public class ConfigReflection {
     public static Object deepCopy(Object from, Object to) {
         Field[] fields = from.getClass().getFields();
         for (Field field : fields) {
-            if (Modifier.isFinal(field.getModifiers())) {
+            if (!isConfigDataField(field)) {
                 continue;
             }
 
