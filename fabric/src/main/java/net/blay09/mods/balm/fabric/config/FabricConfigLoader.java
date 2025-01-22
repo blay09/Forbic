@@ -96,7 +96,6 @@ public class FabricConfigLoader {
                 logger.info("The missing properties have been added and a backup of the previous version was created under {}", backupFile.getName());
             }
         }
-        FabricConfigSaver.save(new File(configFile.getParentFile(), "balm-common.out.toml"), configData);
     }
 
     private static File getBackupConfigFile(File configFile) {
