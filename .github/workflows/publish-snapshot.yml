@@ -1,8 +1,8 @@
 name: publish-snapshot
 on:
   push:
-    tags:
-      - '*'
+    branches:
+      - '**'
 
 jobs:
   publish-snapshot:
