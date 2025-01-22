@@ -1,2 +1,1 @@
-- Added automatic migration of Balm entity data between NeoForge/Fabric/Forge
-- Fixed crash when mod returns null container on Fabric
+- Fixed Forge crash when receiving a config reload event without config data
