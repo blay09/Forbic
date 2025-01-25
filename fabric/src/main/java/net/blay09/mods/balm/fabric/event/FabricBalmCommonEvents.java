@@ -3,16 +3,22 @@ package net.blay09.mods.balm.fabric.event;
 
 import net.blay09.mods.balm.api.event.*;
 import net.blay09.mods.balm.api.event.server.ServerStartedEvent;
+import net.blay09.mods.balm.api.event.server.ServerBeforeStartingEvent;
 import net.blay09.mods.balm.api.event.server.ServerStoppedEvent;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientChunkEvents;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
+import net.fabricmc.fabric.mixin.event.lifecycle.client.ClientWorldMixin;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -68,6 +74,11 @@ public class FabricBalmCommonEvents {
 
             playerTickEndHandlers.add(handler);
         });
+
+        events.registerEvent(ServerBeforeStartingEvent.class, () -> ServerLifecycleEvents.SERVER_STARTING.register(server -> {
+            final ServerBeforeStartingEvent event = new ServerBeforeStartingEvent(server);
+            events.fireEventHandlers(event);
+        }));
 
         events.registerEvent(ServerStartedEvent.class, () -> ServerLifecycleEvents.SERVER_STARTED.register(server -> {
             final ServerStartedEvent event = new ServerStartedEvent(server);
@@ -133,5 +144,27 @@ public class FabricBalmCommonEvents {
             events.fireEventHandlers(event);
             // TODO cannot cancel on fabric
         }));
+
+        events.registerEvent( ChunkEvent.Unload.class,  () -> {
+            ServerChunkEvents.CHUNK_UNLOAD.register((level, chunk) -> { events.fireEventHandlers(new ChunkEvent.Unload(level, chunk)); });
+            ClientChunkEvents.CHUNK_UNLOAD.register((level, chunk) -> { events.fireEventHandlers(new ChunkEvent.Unload(level, chunk)); });
+        });
+
+        events.registerEvent( ChunkEvent.Load.class,  () -> {
+            ServerChunkEvents.CHUNK_LOAD.register((level, chunk) -> { events.fireEventHandlers(new ChunkEvent.Load(level, chunk)); });
+            ClientChunkEvents.CHUNK_LOAD.register((level, chunk) -> { events.fireEventHandlers(new ChunkEvent.Load(level, chunk)); });
+        });
+
+        events.registerEvent( LevelEvent.Load.class,  () -> {
+            ServerWorldEvents.LOAD.register((server, world) -> { events.fireEventHandlers( new LevelEvent.Load(world) ); });
+            //Client levelLoad fired manually from mixin
+        });
+
+        events.registerEvent( LevelEvent.Unload.class,  () -> {
+            ServerWorldEvents.UNLOAD.register((server, world) -> { events.fireEventHandlers( new LevelEvent.Unload(world) ); });
+            //Client levelUnload fired manually from mixin
+        });
+
+
     }
 }
