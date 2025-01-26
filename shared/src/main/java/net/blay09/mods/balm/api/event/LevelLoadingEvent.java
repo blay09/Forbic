@@ -1,13 +1,11 @@
 package net.blay09.mods.balm.api.event;
 
-import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.chunk.ChunkAccess;
 
-public abstract class LevelEvent {
+public abstract class LevelLoadingEvent {
     private final LevelAccessor level;
 
-    public LevelEvent(LevelAccessor level) {
+    public LevelLoadingEvent(LevelAccessor level) {
         this.level = level;
     }
 
@@ -15,13 +13,13 @@ public abstract class LevelEvent {
         return level;
     }
 
-    public static class Load extends LevelEvent {
+    public static class Load extends LevelLoadingEvent {
         public Load(LevelAccessor level) {
             super(level);
         }
     }
 
-    public static class Unload extends LevelEvent {
+    public static class Unload extends LevelLoadingEvent {
         public Unload(LevelAccessor level) {
             super(level);
         }

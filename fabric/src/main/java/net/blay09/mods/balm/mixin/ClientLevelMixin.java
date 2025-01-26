@@ -1,7 +1,7 @@
 package net.blay09.mods.balm.mixin;
 
 import net.blay09.mods.balm.api.Balm;
-import net.blay09.mods.balm.api.event.LevelEvent;
+import net.blay09.mods.balm.api.event.LevelLoadingEvent;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.renderer.LevelRenderer;
@@ -23,6 +23,6 @@ public class ClientLevelMixin {
     private void onConstructor(ClientPacketListener clientPacketListener, ClientLevel.ClientLevelData clientLevelData, ResourceKey<Level> resourceKey, Holder<DimensionType> holder, int i, int j, Supplier<ProfilerFiller> supplier, LevelRenderer levelRenderer, boolean bl, long l,
                                CallbackInfo ci  ) {
         ClientLevel clientLevel = (ClientLevel) (Object) this;
-        Balm.getEvents().fireEvent(new LevelEvent.Load(clientLevel));
+        Balm.getEvents().fireEvent(new LevelLoadingEvent.Load(clientLevel));
     }
 }

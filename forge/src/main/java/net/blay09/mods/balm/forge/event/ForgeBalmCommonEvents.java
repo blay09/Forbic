@@ -2,7 +2,7 @@ package net.blay09.mods.balm.forge.event;
 
 
 import net.blay09.mods.balm.api.event.*;
-import net.blay09.mods.balm.api.event.server.ServerBeforeStartingEvent;
+import net.blay09.mods.balm.api.event.server.ServerStartingEvent;
 import net.blay09.mods.balm.api.event.server.ServerStartedEvent;
 import net.blay09.mods.balm.api.event.server.ServerStoppedEvent;
 import net.minecraft.server.level.ServerPlayer;
@@ -69,9 +69,9 @@ public class ForgeBalmCommonEvents {
             });
         });
 
-        events.registerEvent(ServerBeforeStartingEvent.class, priority -> {
+        events.registerEvent(ServerStartingEvent.class, priority -> {
             MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (net.minecraftforge.event.server.ServerAboutToStartEvent orig) -> {
-                final ServerBeforeStartingEvent event = new ServerBeforeStartingEvent(orig.getServer());
+                final ServerStartingEvent event = new ServerStartingEvent(orig.getServer());
                 events.fireEventHandlers(priority, event);
             });
         });
@@ -283,30 +283,30 @@ public class ForgeBalmCommonEvents {
             });
         });
 
-        events.registerEvent(ChunkEvent.Load.class, priority -> {
+        events.registerEvent(ChunkLoadingEvent.Load.class, priority -> {
             MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (net.minecraftforge.event.level.ChunkEvent.Load orig) -> {
-                final ChunkEvent.Load event = new ChunkEvent.Load(orig.getLevel(), orig.getChunk());
+                final ChunkLoadingEvent.Load event = new ChunkLoadingEvent.Load(orig.getLevel(), orig.getChunk());
                 events.fireEventHandlers(priority, event);
             });
         });
 
-        events.registerEvent(ChunkEvent.Unload.class, priority -> {
+        events.registerEvent(ChunkLoadingEvent.Unload.class, priority -> {
             MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (net.minecraftforge.event.level.ChunkEvent.Unload orig) -> {
-                final ChunkEvent.Unload event = new ChunkEvent.Unload(orig.getLevel(), orig.getChunk());
+                final ChunkLoadingEvent.Unload event = new ChunkLoadingEvent.Unload(orig.getLevel(), orig.getChunk());
                 events.fireEventHandlers(priority, event);
             });
         });
 
-        events.registerEvent(LevelEvent.Load.class, priority -> {
+        events.registerEvent(LevelLoadingEvent.Load.class, priority -> {
             MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (net.minecraftforge.event.level.LevelEvent.Load orig) -> {
-                final LevelEvent.Load event = new LevelEvent.Load(orig.getLevel());
+                final LevelLoadingEvent.Load event = new LevelLoadingEvent.Load(orig.getLevel());
                 events.fireEventHandlers(priority, event);
             });
         });
 
-        events.registerEvent(LevelEvent.Unload.class, priority -> {
+        events.registerEvent(LevelLoadingEvent.Unload.class, priority -> {
             MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (net.minecraftforge.event.level.LevelEvent.Unload orig) -> {
-                final LevelEvent.Unload event = new LevelEvent.Unload(orig.getLevel());
+                final LevelLoadingEvent.Unload event = new LevelLoadingEvent.Unload(orig.getLevel());
                 events.fireEventHandlers(priority, event);
             });
         });
