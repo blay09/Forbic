@@ -2,6 +2,7 @@ package net.blay09.mods.balm.forge.event;
 
 
 import net.blay09.mods.balm.api.event.*;
+import net.blay09.mods.balm.api.event.server.ServerStartingEvent;
 import net.blay09.mods.balm.api.event.server.ServerStartedEvent;
 import net.blay09.mods.balm.api.event.server.ServerStoppedEvent;
 import net.minecraft.server.level.ServerLevel;
@@ -82,6 +83,13 @@ public class ForgeBalmCommonEvents {
         events.registerTickEvent(TickType.Entity, TickPhase.End, (EntityTickHandler handler) -> {
             MinecraftForge.EVENT_BUS.addListener((LivingEvent.LivingTickEvent orig) -> { // TODO ticks at same time as START on Forge
                 handler.handle(orig.getEntity());
+            });
+        });
+
+        events.registerEvent(ServerStartingEvent.class, priority -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (net.minecraftforge.event.server.ServerAboutToStartEvent orig) -> {
+                final ServerStartingEvent event = new ServerStartingEvent(orig.getServer());
+                events.fireEventHandlers(priority, event);
             });
         });
 
@@ -341,6 +349,35 @@ public class ForgeBalmCommonEvents {
                 }
             });
         });
+
+        events.registerEvent(ChunkLoadingEvent.Load.class, priority -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (net.minecraftforge.event.level.ChunkEvent.Load orig) -> {
+                final ChunkLoadingEvent.Load event = new ChunkLoadingEvent.Load(orig.getLevel(), orig.getChunk());
+                events.fireEventHandlers(priority, event);
+            });
+        });
+
+        events.registerEvent(ChunkLoadingEvent.Unload.class, priority -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (net.minecraftforge.event.level.ChunkEvent.Unload orig) -> {
+                final ChunkLoadingEvent.Unload event = new ChunkLoadingEvent.Unload(orig.getLevel(), orig.getChunk());
+                events.fireEventHandlers(priority, event);
+            });
+        });
+
+        events.registerEvent(LevelLoadingEvent.Load.class, priority -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (net.minecraftforge.event.level.LevelEvent.Load orig) -> {
+                final LevelLoadingEvent.Load event = new LevelLoadingEvent.Load(orig.getLevel());
+                events.fireEventHandlers(priority, event);
+            });
+        });
+
+        events.registerEvent(LevelLoadingEvent.Unload.class, priority -> {
+            MinecraftForge.EVENT_BUS.addListener(ForgeBalmEvents.toForge(priority), (net.minecraftforge.event.level.LevelEvent.Unload orig) -> {
+                final LevelLoadingEvent.Unload event = new LevelLoadingEvent.Unload(orig.getLevel());
+                events.fireEventHandlers(priority, event);
+            });
+        });
+
     }
 
 }
