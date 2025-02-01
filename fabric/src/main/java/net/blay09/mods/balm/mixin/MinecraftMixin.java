@@ -5,6 +5,7 @@ import net.blay09.mods.balm.api.event.LevelLoadingEvent;
 import net.blay09.mods.balm.api.event.client.OpenScreenEvent;
 import net.blay09.mods.balm.api.event.client.UseItemInputEvent;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.ReceivingLevelScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.world.InteractionHand;
@@ -58,15 +59,15 @@ public class MinecraftMixin {
         return hand;
     }
 
-    @Inject(method = "clearLevel(Lnet/minecraft/client/gui/screens/Screen;)V", at = @At("HEAD"))
-    public void clearLevel(Screen p_91321_, CallbackInfo ci) {
+    @Inject(method = "clearClientLevel(Lnet/minecraft/client/gui/screens/Screen;)V", at = @At("HEAD"))
+    public void clearClientLevel(Screen p_91321_, CallbackInfo ci) {
         if (this.level != null) {
             Balm.getEvents().fireEvent(new LevelLoadingEvent.Unload(this.level));
         }
     }
 
     @Inject(method = "setLevel(Lnet/minecraft/client/multiplayer/ClientLevel;)V", at = @At("HEAD"))
-    public void onSetLevel(ClientLevel clientLevel, CallbackInfo ci) {
+    public void setLevel(ClientLevel clientLevel, ReceivingLevelScreen.Reason reason, CallbackInfo ci) {
         if (this.level != null) {
             Balm.getEvents().fireEvent(new LevelLoadingEvent.Unload(this.level));
         }
