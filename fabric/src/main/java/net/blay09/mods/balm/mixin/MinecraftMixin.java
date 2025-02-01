@@ -66,7 +66,7 @@ public class MinecraftMixin {
         }
     }
 
-    @Inject(method = "setLevel(Lnet/minecraft/client/multiplayer/ClientLevel;)V", at = @At("HEAD"))
+    @Inject(method = "setLevel(Lnet/minecraft/client/multiplayer/ClientLevel;Lnet/minecraft/client/gui/screens/ReceivingLevelScreen$Reason;)V", at = @At("HEAD"))
     public void setLevel(ClientLevel clientLevel, ReceivingLevelScreen.Reason reason, CallbackInfo ci) {
         if (this.level != null) {
             Balm.getEvents().fireEvent(new LevelLoadingEvent.Unload(this.level));
