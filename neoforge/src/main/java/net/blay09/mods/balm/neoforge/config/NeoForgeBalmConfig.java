@@ -253,10 +253,6 @@ public class NeoForgeBalmConfig extends AbstractBalmConfig {
     public <T extends BalmConfigData> T initializeBackingConfig(Class<T> clazz) {
         IConfigSpec configSpec = createConfigSpec(clazz);
         final var modContainer = ModLoadingContext.get().getActiveContainer();
-        modContainer.registerConfig(ModConfig.Type.COMMON, configSpec);
-        if (FMLEnvironment.dist == Dist.CLIENT) {
-            initializeConfigurationScreen(modContainer);
-        }
 
         modContainer.getEventBus().addListener((ModConfigEvent.Loading event) -> {
             configs.put(clazz, event.getConfig());
@@ -282,6 +278,11 @@ public class NeoForgeBalmConfig extends AbstractBalmConfig {
 
             Balm.getEvents().fireEvent(new ConfigReloadedEvent());
         });
+
+        modContainer.registerConfig(ModConfig.Type.COMMON, configSpec);
+        if (FMLEnvironment.dist == Dist.CLIENT) {
+            initializeConfigurationScreen(modContainer);
+        }
 
         T initialData = createConfigDataInstance(clazz);
         configData.put(clazz, initialData);
