@@ -222,7 +222,6 @@ public class ForgeBalmConfig extends AbstractBalmConfig {
     @Override
     public <T extends BalmConfigData> T initializeBackingConfig(Class<T> clazz) {
         IConfigSpec<?> configSpec = createConfigSpec(clazz);
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, configSpec);
 
         FMLJavaModLoadingContext.get().getModEventBus().addListener((ModConfigEvent.Loading event) -> {
             configs.put(clazz, event.getConfig());
@@ -248,6 +247,8 @@ public class ForgeBalmConfig extends AbstractBalmConfig {
 
             Balm.getEvents().fireEvent(new ConfigReloadedEvent());
         });
+
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, configSpec);
 
         T initialData = createConfigDataInstance(clazz);
         configData.put(clazz, initialData);
