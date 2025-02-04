@@ -1,4 +1,4 @@
-package net.blay09.mods.balm.fabric.config.notoml;
+package net.blay09.mods.balm.notoml;
 
 public class NotomlStateMachine {
     private NotomlParserState state = NotomlParserState.None;
