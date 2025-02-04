@@ -1,5 +1,7 @@
 package net.blay09.mods.balm.forge.config;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.config.AbstractBalmConfig;
 import net.blay09.mods.balm.api.config.BalmConfigData;
@@ -31,6 +33,7 @@ public class ForgeBalmConfig extends AbstractBalmConfig {
 
     private final Logger logger = LogManager.getLogger();
     private final Map<Class<?>, ModConfig> configs = new HashMap<>();
+    private final Multimap<String, Class<?>> configsByMod = ArrayListMultimap.create();
     private final Map<Class<?>, BalmConfigData> configData = new HashMap<>();
 
     private <T extends BalmConfigData> IConfigSpec<?> createConfigSpec(Class<T> clazz) {
@@ -276,5 +279,10 @@ public class ForgeBalmConfig extends AbstractBalmConfig {
     @Override
     public File getConfigDir() {
         return FMLPaths.CONFIGDIR.get().toFile();
+    }
+
+    @Override
+    public List<? extends BalmConfigData> getConfigsByMod(String modId) {
+        return configsByMod.get(modId).stream().map(configData::get).toList();
     }
 }
