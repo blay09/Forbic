@@ -1,4 +1,4 @@
-package net.blay09.mods.balm.fabric.config.notoml;
+package net.blay09.mods.balm.notoml;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
