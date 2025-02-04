@@ -1,4 +1,4 @@
-package net.blay09.mods.balm.fabric.config.notoml;
+package net.blay09.mods.balm.notoml;
 
 import java.io.IOException;
 import java.io.Writer;

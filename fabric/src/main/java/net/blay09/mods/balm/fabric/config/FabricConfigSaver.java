@@ -6,8 +6,8 @@ import com.mojang.logging.LogUtils;
 import net.blay09.mods.balm.api.config.BalmConfigData;
 import net.blay09.mods.balm.api.config.Comment;
 import net.blay09.mods.balm.api.network.ConfigReflection;
-import net.blay09.mods.balm.fabric.config.notoml.Notoml;
-import net.blay09.mods.balm.fabric.config.notoml.NotomlSerializer;
+import net.blay09.mods.balm.notoml.Notoml;
+import net.blay09.mods.balm.notoml.NotomlSerializer;
 import org.slf4j.Logger;
 
 import java.io.File;

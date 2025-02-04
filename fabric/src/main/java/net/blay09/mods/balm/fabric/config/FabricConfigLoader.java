@@ -3,9 +3,9 @@ package net.blay09.mods.balm.fabric.config;
 import com.mojang.logging.LogUtils;
 import net.blay09.mods.balm.api.config.BalmConfigData;
 import net.blay09.mods.balm.api.config.ExpectedType;
-import net.blay09.mods.balm.fabric.config.notoml.Notoml;
-import net.blay09.mods.balm.fabric.config.notoml.NotomlError;
-import net.blay09.mods.balm.fabric.config.notoml.NotomlParser;
+import net.blay09.mods.balm.notoml.Notoml;
+import net.blay09.mods.balm.notoml.NotomlError;
+import net.blay09.mods.balm.notoml.NotomlParser;
 import org.slf4j.Logger;
 
 import java.io.File;
