@@ -11,9 +11,13 @@ dependencies {
     include modApi("net.blay09.mods:kuma-api-fabric:[20.1.0,20.2.0)")
 
     modCompileOnly "me.shedaniel.cloth:cloth-config-fabric:11.0.99"
-    modCompileOnly "com.terraformersmc:modmenu:$modmenu_version"
+    modImplementation "com.terraformersmc:modmenu:$modmenu_version"
 
     modCompileOnly("de.siphalor:amecsapi-1.20:1.5.2+mc1.20-pre1")
 
     modCompileOnly modApi('teamreborn:energy:3.0.0')
+
+    modCompileOnly "curse.maven:configured-457570:5180902"
+    // runtimeOnly 'com.electronwill.night-config:core:3.8.1'
+    // runtimeOnly 'com.electronwill.night-config:toml:3.8.1'
 }

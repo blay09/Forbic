@@ -5,6 +5,7 @@ import net.blay09.mods.balm.api.network.SyncConfigMessage;
 import net.minecraft.world.entity.player.Player;
 
 import java.io.File;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -34,4 +35,6 @@ public interface BalmConfig {
     <T extends BalmConfigData> Table<String, String, BalmConfigProperty<?>> getConfigProperties(Class<T> clazz);
 
     <T extends BalmConfigData> String getConfigName(Class<T> clazz);
+
+    List<? extends BalmConfigData> getConfigsByMod(String modId);
 }

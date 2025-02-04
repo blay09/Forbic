@@ -2,7 +2,6 @@
   "schemaVersion": 1,
   "id": "balm-fabric",
   "version": "${version}",
-
   "name": "Balm",
   "description": "Abstraction Layer (but not really)™ for Blay's multiplatform mods",
   "authors": [
@@ -13,10 +12,8 @@
     "sources": "https://github.com/TwelveIterationMods/Balm",
     "issues": "https://github.com/TwelveIterationMods/Balm/issues"
   },
-
   "license": "All Rights Reserved",
   "icon": "balm-icon.png",
-
   "environment": "*",
   "entrypoints": {
     "main": [
@@ -32,7 +29,6 @@
   "mixins": [
     "balm.mixins.json"
   ],
-
   "depends": {
     "fabricloader": ">=0.14.21",
     "fabric-api": "*",
@@ -47,6 +43,11 @@
         "modmenu.discord": "https://discord.gg/VAfZ2Nau6j"
       },
       "badges": ["library"]
+    },
+    "configured": {
+      "providers": [
+        "net.blay09.mods.balm.fabric.compat.ConfiguredConfigProvider"
+      ]
     }
   }
 }
