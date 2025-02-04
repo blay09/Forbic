@@ -5,6 +5,7 @@ import com.google.common.collect.Table;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.event.ConfigReloadedEvent;
 import net.blay09.mods.balm.api.event.PlayerLoginEvent;
+import net.blay09.mods.balm.api.network.ConfigReflection;
 import net.blay09.mods.balm.api.network.SyncConfigMessage;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Player;
@@ -144,7 +145,7 @@ public abstract class AbstractBalmConfig implements BalmConfig {
         var backingConfig = Balm.getConfig().getBackingConfig(clazz);
         var defaultConfig = defaultConfigs.get(clazz);
         Table<String, String, BalmConfigProperty<?>> properties = HashBasedTable.create();
-        for (Field rootField : clazz.getFields()) {
+        for (Field rootField : ConfigReflection.getAllFields(clazz)) {
             var category = "";
             Class<?> fieldType = rootField.getType();
             if (isPropertyType(fieldType)) {
@@ -152,7 +153,7 @@ public abstract class AbstractBalmConfig implements BalmConfig {
                 properties.put(category, property, createConfigProperty(backingConfig, null, rootField, defaultConfig));
             } else {
                 category = rootField.getName();
-                for (Field propertyField : fieldType.getFields()) {
+                for (Field propertyField : ConfigReflection.getAllFields(fieldType)) {
                     var property = propertyField.getName();
                     properties.put(category, property, createConfigProperty(backingConfig, rootField, propertyField, defaultConfig));
                 }
