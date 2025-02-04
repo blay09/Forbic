@@ -1,5 +1,7 @@
 package net.blay09.mods.balm.fabric.config;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 import com.mojang.logging.LogUtils;
 import net.blay09.mods.balm.api.config.AbstractBalmConfig;
 import net.blay09.mods.balm.api.config.BalmConfigData;
@@ -9,11 +11,13 @@ import org.slf4j.Logger;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class FabricBalmConfig extends AbstractBalmConfig {
 
     private static final Logger logger = LogUtils.getLogger();
+    private final Multimap<String, Class<?>> configsByMod = ArrayListMultimap.create();
     private final Map<Class<?>, BalmConfigData> configs = new HashMap<>();
 
     @Override
@@ -21,7 +25,7 @@ public class FabricBalmConfig extends AbstractBalmConfig {
         var configName = getConfigName(clazz);
         var configFile = getConfigFile(configName);
         var configData = createConfigDataInstance(clazz);
-        if(configFile.exists()) {
+        if (configFile.exists()) {
             try {
                 FabricConfigLoader.load(configFile, configData);
             } catch (IOException e) {
@@ -35,6 +39,7 @@ public class FabricBalmConfig extends AbstractBalmConfig {
             }
         }
         configs.put(clazz, configData);
+        configsByMod.put(configName, clazz);
         return configData;
     }
 
@@ -58,5 +63,10 @@ public class FabricBalmConfig extends AbstractBalmConfig {
     @Override
     public File getConfigDir() {
         return FabricLoader.getInstance().getConfigDir().toFile();
+    }
+
+    @Override
+    public List<? extends BalmConfigData> getConfigsByMod(String modId) {
+        return configsByMod.get(modId).stream().map(configs::get).toList();
     }
 }

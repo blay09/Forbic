@@ -32,7 +32,6 @@
     "${mod_id}.mixins.json",
     "${mod_id}.fabric.mixins.json"
   ],
-
   "depends": {
     "fabricloader": ">=${fabric_loader_version}",
     "fabric-api": "*",
@@ -47,6 +46,11 @@
         "modmenu.discord": "https://discord.gg/VAfZ2Nau6j"
       },
       "badges": ["library"]
+    },
+    "configured": {
+      "providers": [
+        "net.blay09.mods.balm.fabric.compat.ConfiguredConfigProvider"
+      ]
     }
   }
 }
