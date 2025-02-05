@@ -1,6 +1,8 @@
 package net.blay09.mods.balm.neoforge.config;
 
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Multimap;
 import com.google.common.collect.Table;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.config.AbstractBalmConfig;
@@ -38,6 +40,7 @@ public class NeoForgeBalmConfig extends AbstractBalmConfig {
     private final Logger logger = LogManager.getLogger();
     private final Map<Class<?>, ModConfig> configs = new HashMap<>();
     private final Map<Class<?>, BalmConfigData> configData = new HashMap<>();
+    private final Multimap<String, Class<?>> configsByMod = ArrayListMultimap.create();
     private final Table<Class<?>, String, ModConfigSpec.ConfigValue<?>> configProperties = HashBasedTable.create();
 
     private <T extends BalmConfigData> IConfigSpec createConfigSpec(Class<T> clazz) {
@@ -286,6 +289,7 @@ public class NeoForgeBalmConfig extends AbstractBalmConfig {
 
         T initialData = createConfigDataInstance(clazz);
         configData.put(clazz, initialData);
+        configsByMod.put(getConfigName(clazz), clazz);
         return initialData;
     }
 
@@ -307,6 +311,11 @@ public class NeoForgeBalmConfig extends AbstractBalmConfig {
     @Override
     public File getConfigDir() {
         return FMLPaths.CONFIGDIR.get().toFile();
+    }
+
+    @Override
+    public List<? extends BalmConfigData> getConfigsByMod(String modId) {
+        return configsByMod.get(modId).stream().map(configData::get).toList();
     }
 
     private static void initializeConfigurationScreen(ModContainer modContainer) {
