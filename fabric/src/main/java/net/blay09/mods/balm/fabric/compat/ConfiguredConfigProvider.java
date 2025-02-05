@@ -7,12 +7,9 @@ import net.blay09.mods.balm.api.config.BalmConfigData;
 import net.blay09.mods.balm.api.config.BalmConfigProperty;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import org.apache.commons.lang3.ClassUtils;
 
-import java.nio.file.Path;
 import java.util.*;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class ConfiguredConfigProvider implements IModConfigProvider {
@@ -25,12 +22,13 @@ public class ConfiguredConfigProvider implements IModConfigProvider {
     private static IModConfig mapConfig(String modId, BalmConfigData configData) {
         return new IModConfig() {
             @Override
-            public void update(IConfigEntry entry) {
+            public ActionResult update(IConfigEntry entry) {
                 Balm.getConfig().saveBackingConfig(configData.getClass());
+                return ActionResult.success();
             }
 
             @Override
-            public IConfigEntry getRoot() {
+            public IConfigEntry createRootEntry() {
                 return mapConfigRoot(modId, configData);
             }
 
@@ -47,10 +45,6 @@ public class ConfiguredConfigProvider implements IModConfigProvider {
             @Override
             public String getModId() {
                 return modId;
-            }
-
-            @Override
-            public void loadWorldConfig(Path path, Consumer<IModConfig> consumer) {
             }
         };
     }
@@ -263,8 +257,7 @@ public class ConfiguredConfigProvider implements IModConfigProvider {
         configsByType.put(ConfigType.UNIVERSAL, mappedConfigs);
         return ConfigScreenHelper.createSelectionScreen(parent,
                 Component.translatable("config." + modId + ".title"),
-                configsByType,
-                new ResourceLocation("textures/block/stone.png")
+                configsByType
         );
     }
 }
