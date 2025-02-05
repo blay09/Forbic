@@ -258,6 +258,7 @@ public class ForgeBalmConfig extends AbstractBalmConfig {
 
         T initialData = createConfigDataInstance(clazz);
         configData.put(clazz, initialData);
+        configsByMod.put(getConfigName(clazz), clazz);
         return initialData;
     }
 
