@@ -29,5 +29,8 @@
   "tag.item.balm.ores": "Ores",
   "tag.item.balm.stones": "Stones",
   "tag.item.balm.wooden_chests": "Wooden Chests",
-  "tag.item.balm.wooden_rods": "Wooden Rods"
+  "tag.item.balm.wooden_rods": "Wooden Rods",
+  "disconnect.balm.mod_missing_on_server": "The server does not have %s installed. Please remove the mod from your game or install it on the server as well.",
+  "disconnect.balm.mod_missing_on_client": "You do not have %s installed. Please install %s version %s to play on this server.",
+  "disconnect.balm.mod_version_mismatch": "Version mismatch for %s. The server expects version %s, but you currently have %s installed. Please install the correct version."
 }

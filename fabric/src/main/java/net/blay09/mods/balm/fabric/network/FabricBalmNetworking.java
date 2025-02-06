@@ -25,10 +25,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
@@ -39,14 +36,32 @@ public class FabricBalmNetworking implements BalmNetworking {
 
     private static final List<ClientboundMessageRegistration<?>> clientMessageRegistrations = new ArrayList<>();
 
+    private final Set<String> registeredMods = new HashSet<>();
+    private final Set<String> clientOnlyMods = new HashSet<>();
+    private final Set<String> serverOnlyMods = new HashSet<>();
+
     private static Player replyPlayer;
+
+    public Set<String> getRegisteredMods() {
+        return registeredMods;
+    }
+
+    public boolean isClientOnly(String modId) {
+        return clientOnlyMods.contains(modId);
+    }
+
+    public boolean isServerOnly(String modId) {
+        return serverOnlyMods.contains(modId);
+    }
 
     @Override
     public void allowClientOnly(String modId) {
+        clientOnlyMods.add(modId);
     }
 
     @Override
     public void allowServerOnly(String modId) {
+        serverOnlyMods.add(modId);
     }
 
     @Override
@@ -141,6 +156,7 @@ public class FabricBalmNetworking implements BalmNetworking {
 
     @Override
     public <T> void registerClientboundPacket(ResourceLocation identifier, Class<T> clazz, BiConsumer<T, FriendlyByteBuf> encodeFunc, Function<FriendlyByteBuf, T> decodeFunc, BiConsumer<Player, T> handler) {
+        registeredMods.add(identifier.getNamespace());
         ClientboundMessageRegistration<T> messageRegistration = new ClientboundMessageRegistration<>(identifier, clazz, encodeFunc, decodeFunc, handler);
 
         messagesByClass.put(clazz, messageRegistration);
@@ -151,6 +167,7 @@ public class FabricBalmNetworking implements BalmNetworking {
 
     @Override
     public <T> void registerServerboundPacket(ResourceLocation identifier, Class<T> clazz, BiConsumer<T, FriendlyByteBuf> encodeFunc, Function<FriendlyByteBuf, T> decodeFunc, BiConsumer<ServerPlayer, T> handler) {
+        registeredMods.add(identifier.getNamespace());
         MessageRegistration<T> messageRegistration = new ServerboundMessageRegistration<>(identifier, clazz, encodeFunc, decodeFunc, handler);
 
         messagesByClass.put(clazz, messageRegistration);
