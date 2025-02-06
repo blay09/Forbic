@@ -34,14 +34,34 @@ public class FabricBalmNetworking implements BalmNetworking {
 
     private static final Map<CustomPacketPayload.Type<? extends CustomPacketPayload>, MessageRegistration<RegistryFriendlyByteBuf, ? extends CustomPacketPayload>> messagesByType = new HashMap<>();
 
+    private static final List<ClientboundMessageRegistration<?>> clientMessageRegistrations = new ArrayList<>();
+
+    private final Set<String> registeredMods = new HashSet<>();
+    private final Set<String> clientOnlyMods = new HashSet<>();
+    private final Set<String> serverOnlyMods = new HashSet<>();
+
     private static PacketSender replyPacketSender;
+
+    public Set<String> getRegisteredMods() {
+        return registeredMods;
+    }
+
+    public boolean isClientOnly(String modId) {
+        return clientOnlyMods.contains(modId);
+    }
+
+    public boolean isServerOnly(String modId) {
+        return serverOnlyMods.contains(modId);
+    }
 
     @Override
     public void allowClientOnly(String modId) {
+        clientOnlyMods.add(modId);
     }
 
     @Override
     public void allowServerOnly(String modId) {
+        serverOnlyMods.add(modId);
     }
 
     @Override
@@ -111,6 +131,7 @@ public class FabricBalmNetworking implements BalmNetworking {
 
     @Override
     public <T extends CustomPacketPayload> void registerClientboundPacket(CustomPacketPayload.Type<T> type, Class<T> clazz, BiConsumer<RegistryFriendlyByteBuf, T> encodeFunc, Function<RegistryFriendlyByteBuf, T> decodeFunc, BiConsumer<Player, T> handler) {
+        registeredMods.add(identifier.getNamespace());
         final var messageRegistration = new ClientboundMessageRegistration<>(type, clazz, encodeFunc, decodeFunc, handler);
         PayloadTypeRegistry.playS2C().register(type, messageRegistration.getCodec());
         messagesByType.put(type, messageRegistration);
@@ -118,6 +139,7 @@ public class FabricBalmNetworking implements BalmNetworking {
 
     @Override
     public <T extends CustomPacketPayload> void registerServerboundPacket(CustomPacketPayload.Type<T> type, Class<T> clazz, BiConsumer<RegistryFriendlyByteBuf, T> encodeFunc, Function<RegistryFriendlyByteBuf, T> decodeFunc, BiConsumer<ServerPlayer, T> handler) {
+        registeredMods.add(identifier.getNamespace());
         final var messageRegistration = new ServerboundMessageRegistration<>(type, clazz, encodeFunc, decodeFunc, handler);
         messagesByType.put(type, messageRegistration);
 

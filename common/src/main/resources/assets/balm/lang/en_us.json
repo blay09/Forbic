@@ -41,5 +41,8 @@
   "config.balm.exampleEnumList": "Example Enum List",
   "config.balm.exampleCategory.innerField": "Example Inner Field",
   "config.balm.exampleCategory.exampleFloat": "Example Float",
-  "balm.configuration.exampleCategory": "Example Category"
+  "balm.configuration.exampleCategory": "Example Category",
+  "disconnect.balm.mod_missing_on_server": "The server does not have %s installed. Please remove the mod from your game or install it on the server as well.",
+  "disconnect.balm.mod_missing_on_client": "You do not have %s installed. Please install %s version %s to play on this server.",
+  "disconnect.balm.mod_version_mismatch": "Version mismatch for %s. The server expects version %s, but you currently have %s installed. Please install the correct version."
 }
